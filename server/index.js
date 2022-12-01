@@ -7,6 +7,7 @@ dotenv.config();
 
 const {PORT, MONGODB_URL} = process.env;
 const app = express();
+app.use(express.json());
 app.use('/api', ProductRouter);
 
 const startApp = async () => {

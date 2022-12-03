@@ -1,5 +1,5 @@
 <template>
-  <button :class="['app-button', 'color']" :type="type">{{ text }}</button>
+  <button :class="['app-button', color]" :type="type">{{ text }}</button>
 </template>
 <script lang="ts" setup>
 defineProps<{

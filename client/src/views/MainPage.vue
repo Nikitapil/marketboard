@@ -5,7 +5,7 @@
       <section>
         <button class="create-btn" @click="onOpenAdForm">Create new ad</button>
         <app-modal v-model="isAdFormOpened">
-          <ad-form/>
+          <ad-form @cancel="onCloseAdForm" />
         </app-modal>
       </section>
     </div>
@@ -18,6 +18,7 @@ import AdForm from '@/components/marketboard/AdForm.vue';
 const isAdFormOpened = ref(false);
 
 const onOpenAdForm = () => (isAdFormOpened.value = true);
+const onCloseAdForm = () => (isAdFormOpened.value = false);
 </script>
 <style lang="scss" scoped>
 .create-btn {

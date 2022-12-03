@@ -1,5 +1,5 @@
 <template>
-  <form class="ad-form">
+  <form @submit.prevent class="ad-form">
     <h2 class="ad-form__title">New ad</h2>
     <app-input
       v-model="adInfo.title"
@@ -58,9 +58,19 @@
       class="add-btn"
       type="button"
       text="Add photo link"
-      color='primary'
+      color="primary"
       @click="onAddPhotolink"
     />
+    <hr />
+    <div class="buttons">
+      <app-button
+        color="danger"
+        text="Cancel"
+        type="button"
+        @click="$emit('cancel')"
+      />
+      <app-button color="success" text="Create" type="submit" />
+    </div>
   </form>
 </template>
 
@@ -129,6 +139,12 @@ const onDeletePhotoLink = (id: string) => {
 
   .photolink {
     flex: 1 1 auto;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 50px;
+    align-self: center;
   }
 }
 </style>

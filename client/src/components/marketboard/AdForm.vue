@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent class="ad-form">
+  <form @submit.prevent="onSubmit" class="ad-form">
     <h2 class="ad-form__title">New ad</h2>
     <app-input
       v-model="adInfo.title"
@@ -22,7 +22,7 @@
       placeholder="Enter price"
       rules="numeric"
     />
-    <div v-for="(link, index) in adInfo.photolinks" :key="link.id">
+    <div v-for="(link, index) in adInfo.photoLinks" :key="link.id">
       <div class="photolink-control">
         <app-input
           v-model="link.link"
@@ -79,22 +79,36 @@ import AppInput from '@/components/UI/AppInput.vue';
 import { ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 import AppButton from '@/components/UI/AppButton.vue';
+import { useAdsStore } from '@/stores/adsStore';
+import { useForm } from 'vee-validate';
+
+const emit = defineEmits(['on-submit']);
+
+const { validate } = useForm();
+
 const adInfo = ref({
   title: '',
   description: '',
-  photolinks: [{ id: uuidv4(), link: '' }],
+  photoLinks: [{ id: uuidv4(), link: '' }],
   mainPhoto: '',
   price: ''
 });
 
 const onAddPhotolink = () => {
-  adInfo.value.photolinks.push({ id: uuidv4(), link: '' });
+  adInfo.value.photoLinks.push({ id: uuidv4(), link: '' });
 };
 
 const onDeletePhotoLink = (id: string) => {
-  adInfo.value.photolinks = adInfo.value.photolinks.filter(
+  adInfo.value.photoLinks = adInfo.value.photoLinks.filter(
     (link) => link.id !== id
   );
+};
+
+const onSubmit = async () => {
+  const isValid = await validate();
+  if (isValid.valid) {
+    emit('on-submit', adInfo.value);
+  }
 };
 </script>
 

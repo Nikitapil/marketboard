@@ -19,7 +19,7 @@ class ProductController {
 
   async getAllProducts(req, res) {
     try {
-      const {limit = 10, page = 1} = req.query;
+      const {limit = 9, page = 1} = req.query;
       const products = await Product.find().limit(limit).skip((page - 1) * limit).sort({'updatedAt': -1});
       const totalCount = await  Product.countDocuments();
       const totalPages = Math.ceil(totalCount / limit);

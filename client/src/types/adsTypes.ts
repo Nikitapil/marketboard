@@ -30,4 +30,6 @@ export interface IAdsGetters {
   getAllProducts: (page?: number) => void;
   createProduct: (product: TAdFormType) => void;
   getCurrentProduct: (id: string) => void;
+  deleteCurrentProduct: () => void;
+  editCurrentProduct: (product: TAdFormType) => void;
 }

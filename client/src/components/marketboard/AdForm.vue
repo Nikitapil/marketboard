@@ -69,24 +69,26 @@
         type="button"
         @click="$emit('cancel')"
       />
-      <app-button color="success" text="Create" type="submit" />
+      <app-button color="success" :text="submitButtonText" type="submit" />
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
 import AppInput from '@/components/UI/AppInput.vue';
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 import AppButton from '@/components/UI/AppButton.vue';
-import { useAdsStore } from '@/stores/adsStore';
 import { useForm } from 'vee-validate';
-
+import type { TAdFormType } from '@/types/adsTypes';
+const props = defineProps<{
+  product?: TAdFormType;
+}>();
 const emit = defineEmits(['on-submit']);
 
 const { validate } = useForm();
 
-const adInfo = ref({
+const adInfo = ref<TAdFormType>({
   title: '',
   description: '',
   photoLinks: [{ id: uuidv4(), link: '' }],
@@ -110,6 +112,16 @@ const onSubmit = async () => {
     emit('on-submit', adInfo.value);
   }
 };
+
+const submitButtonText = computed(() => {
+  return props.product ? 'Edit' : 'Create';
+});
+
+onMounted(() => {
+  if (props.product) {
+    adInfo.value = props.product;
+  }
+});
 </script>
 
 <style lang="scss" scoped>

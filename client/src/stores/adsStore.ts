@@ -37,6 +37,28 @@ export const useAdsStore = defineStore<
 
     async getCurrentProduct(id: string) {
       this.currentProduct = await ProductService.getSingleProduct(id);
+    },
+
+    async deleteCurrentProduct() {
+      if (!this.currentProduct) {
+        return;
+      }
+      await ProductService.deleteSingleProduct(this.currentProduct._id);
+      this.currentProduct = null;
+      await this.getAllProducts();
+    },
+
+    async editCurrentProduct(product: TAdFormType) {
+      if (!this.currentProduct) {
+        return;
+      }
+      const request = {
+        ...this.currentProduct,
+        ...product,
+        photoLinks: product.photoLinks.map((link) => link.link)
+      };
+      await ProductService.editProduct(request);
+      await this.getCurrentProduct(this.currentProduct._id);
     }
   }
 });

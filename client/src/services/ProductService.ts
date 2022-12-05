@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { TAdFormType } from '@/types/adsTypes';
+import type { TAdFormType, TAdType } from '@/types/adsTypes';
 
 export class ProductService {
   static async getAllProducts(page = 1) {
@@ -36,6 +36,18 @@ export class ProductService {
     }
   }
 
+  static async editProduct(data: TAdType) {
+    try {
+      const response = await axios.put(
+        'http://localhost:5000/api/product',
+        data
+      );
+      return response.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   static async getSingleProduct(id: string) {
     try {
       const response = await axios.get(
@@ -44,6 +56,15 @@ export class ProductService {
       return response.data;
     } catch (e) {
       return null;
+    }
+  }
+
+  static async deleteSingleProduct(id: string) {
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/product/${id}`)
+
+    } catch (e) {
+      console.error(e);
     }
   }
 }

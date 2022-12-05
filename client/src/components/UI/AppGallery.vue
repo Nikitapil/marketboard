@@ -8,6 +8,8 @@
         v-for="photo in photos"
         :key="photo.id"
         class="gallery__switcher-photo"
+        :class="{ active: chosenPhoto === photo.link }"
+        @click="setMainPhoto(photo.link)"
       >
         <img :src="photo.link" alt="photo" />
       </div>
@@ -15,7 +17,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 const props = defineProps<{ photosLinks: string[] }>();
 
@@ -26,6 +28,14 @@ const photos = computed(() => {
     link,
     id: uuidv4()
   }));
+});
+
+const setMainPhoto = (link: string) => {
+  chosenPhoto.value = link;
+};
+
+watch(photos, () => {
+  setMainPhoto(photos.value[0].link);
 });
 </script>
 <style scoped lang="scss">
@@ -51,9 +61,13 @@ const photos = computed(() => {
     overflow-y: auto;
     &-photo {
       max-width: 110px;
-      height: 140px;
+      height: 120px;
       cursor: pointer;
       border: 2px solid black;
+
+      &.active {
+        border: 2px solid red;
+      }
       img {
         width: 106px;
         height: 100%;

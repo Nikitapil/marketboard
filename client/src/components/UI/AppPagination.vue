@@ -20,6 +20,7 @@ defineProps<{ totalPages: number; currentPage: number }>();
   button {
     background: none;
     border: none;
+    font-size: 20px;
     &.active {
       color: red;
     }

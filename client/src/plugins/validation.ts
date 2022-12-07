@@ -1,5 +1,5 @@
 import { defineRule } from 'vee-validate';
-import { url } from '@vee-validate/rules';
+import { url, email, max, min } from '@vee-validate/rules';
 export const validation = () => {
   defineRule('required', (value, _, ctx) => {
     if (!value) {
@@ -9,6 +9,10 @@ export const validation = () => {
   });
 
   defineRule('url', url);
+  defineRule('email', email);
+  defineRule('max', max);
+  defineRule('min', min);
+
   defineRule('numeric', (value, _, ctx) => {
     // @ts-ignore
     if (Number.isNaN(+value)) {
@@ -17,4 +21,4 @@ export const validation = () => {
     // @ts-ignore
     return !Number.isNaN(+value);
   });
-}
+};

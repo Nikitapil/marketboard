@@ -1,16 +1,17 @@
 import $api from '@/api/api';
 import type { TAdFormType, TAdType } from '@/types/adsTypes';
+import type { TAllProductsResponse } from '@/types/product-responses';
 
 export class ProductService {
-  static async getAllProducts(page = 1) {
+  static async getAllProducts(page = 1): Promise<TAllProductsResponse> {
     try {
-      const response = await $api.get('/all_products', {
+      const response = await $api.get<TAllProductsResponse>('/all_products', {
         params: { page }
       });
       return response.data;
     } catch (e) {
       return {
-        ads: [],
+        products: [],
         totalCount: 0,
         totalPages: 0
       };
@@ -39,9 +40,9 @@ export class ProductService {
     }
   }
 
-  static async getSingleProduct(id: string) {
+  static async getSingleProduct(id: string): Promise<TAdType | null> {
     try {
-      const response = await $api.get(`product/${id}`);
+      const response = await $api.get<TAdType>(`product/${id}`);
       return response.data;
     } catch (e) {
       return null;

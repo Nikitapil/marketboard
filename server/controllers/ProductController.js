@@ -1,82 +1,62 @@
 import {validationResult} from 'express-validator';
-import Product from '../models/Product.js';
+import ApiError from '../exceptions/api-error.js';
+import productsService from '../service/ProductsService.js';
 
 class ProductController {
-  async createProduct(req, res) {
+  async createProduct(req, res, next) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-       return res.status(400).json({errorMessage: errors.errors[0].msg });
+       return next(ApiError.BadRequest('Validation error', errors.array()));
       }
-      const product = new Product(req.body);
-      const createdProduct = await product.save();
-      return res.status(200).json(createdProduct);
+      const product = await productsService.createProduct(req.body);
+      return res.status(200).json(product);
     } catch (e) {
-      console.error(e);
-      return res.status(400).json({ errorMessage: 'Creating error'});
+      return next(e);
     }
   }
 
-  async getAllProducts(req, res) {
+  async getAllProducts(req, res, next) {
     try {
       const {limit = 9, page = 1} = req.query;
-      const products = await Product.find().limit(limit).skip((page - 1) * limit).sort({'updatedAt': -1});
-      const totalCount = await  Product.countDocuments();
-      const totalPages = Math.ceil(totalCount / limit);
-      return res.status(200).json({ products, totalPages, totalCount });
+      const productsData = await productsService.getAllProducts(limit, page);
+      return res.status(200).json(productsData);
     } catch (e) {
-      console.error(e);
-      return res.status(400).json({errorMessage: 'Get all products error'});
+      return next(e);
     }
   }
 
-  async getSingleProduct(req, res) {
+  async getSingleProduct(req, res, next) {
     try {
       const { id } = req.params;
-      if (!id) {
-       return res.status(400).json({errorMessage: 'id is empty'});
-      }
-      const product = await Product.findById(id);
-      if (!product) {
-       return res.status(404).json({errorMessage: `No product with id: ${id}`
-      });
-      }
-     return res.status(200).json(product);
+      const product = await productsService.getSingleProduct(id);
+      return res.status(200).json(product);
     } catch (e) {
-      console.error(e);
-     return res.status(400).json({errorMessage: 'Get product Error'});
+     return next(e);
     }
   }
 
-  async updateProduct(req, res) {
+  async updateProduct(req, res, next) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-       return res.status(400).json({errorMessage: errors.errors[0].msg });
+       return next(ApiError.BadRequest('Validation error', errors.array()));
       }
       const product = req.body;
-      const updatedProduct = await Product.findByIdAndUpdate(product._id, product, {new: true});
-      if (!updatedProduct) {
-       return res.status(404).json({ errorMessage: 'product not found' });
-      }
+      const updatedProduct = await productsService.updateProduct(product);
      return res.status(200).json(updatedProduct);
     } catch (e) {
-      console.error(e);
-     return res.status(400).json({ errorMessage: 'Updating error'});
+     return next(e);
     }
   }
 
-  async deleteProduct(req, res) {
+  async deleteProduct(req, res, next) {
     try {
       const { id } = req.params;
-      if (!id) {
-       return res.status(400).json({errorMessage: 'id is empty'});
-      }
-      const product = await Product.findByIdAndDelete(id);
+      const product = await productsService.deleteProduct(id);
      return res.status(200).json({_id: product._id});
     } catch (e) {
-      console.error(e);
-     return res.status(400).json({ errorMessage: 'Delete error'});
+     return next(e);
     }
   }
 }

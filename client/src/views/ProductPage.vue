@@ -22,6 +22,8 @@
         <div class="product__texts">
           <p><span>Description</span>: {{ description }}</p>
           <p><span>Price</span>: {{ price }}</p>
+          <p><span>Created</span>: {{ createdDate }}</p>
+          <p><span>Updated</span>: {{ updatedDate }}</p>
         </div>
       </div>
     </div>
@@ -51,6 +53,7 @@ import DeleteProductModal from '@/components/marketboard/DeleteProductModal.vue'
 import AdForm from '@/components/marketboard/AdForm.vue';
 import { v4 as uuidv4 } from 'uuid';
 import type { TAdFormType } from '@/types/adsTypes';
+import { toDateFormat } from '@/utils/dates';
 const route = useRoute();
 const router = useRouter();
 const adsStore = useAdsStore();
@@ -68,6 +71,14 @@ const price = computed(() => {
 
 const description = computed(() => {
   return adsStore.currentProduct?.description || 'Not specified';
+});
+
+const createdDate = computed(() => {
+  return toDateFormat(adsStore.currentProduct!.createdAt);
+});
+
+const updatedDate = computed(() => {
+  return toDateFormat(adsStore.currentProduct!.updatedAt);
 });
 
 const productFormValues = computed(() => {

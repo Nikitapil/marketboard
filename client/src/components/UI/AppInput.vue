@@ -4,7 +4,7 @@
       <label v-if="label" :for="name">{{ label }}</label>
       <input
         v-if="tagName === 'input'"
-        type="text"
+        :type="type"
         v-model="value"
         :id="name"
         :placeholder="placeholder"
@@ -40,9 +40,11 @@ const props = withDefaults(
     label?: string;
     tagName?: 'input' | 'textarea';
     customErrorMessage?: string;
+    type?: string;
   }>(),
   {
-    tagName: 'input'
+    tagName: 'input',
+    type: 'text'
   }
 );
 

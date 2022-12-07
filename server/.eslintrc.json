@@ -17,6 +17,7 @@
         "comma-dangle": ["error", "never"],
         "class-methods-use-this": "off",
         "import/extensions": "off",
-        "no-underscore-dangle": "off"
+        "no-underscore-dangle": "off",
+        "consistent-return": "warn"
     }
 }

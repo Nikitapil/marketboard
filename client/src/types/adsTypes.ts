@@ -14,6 +14,7 @@ export type TAdType = {
   price: string;
   createdAt: string;
   updatedAt: string;
+  userId: string;
   _id: string;
 };
 

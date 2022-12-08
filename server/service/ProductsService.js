@@ -30,14 +30,25 @@ class ProductsService {
     return updatedProduct;
   }
 
-  async deleteProduct(id) {
+  async deleteProduct(id, userId) {
+    const productToDelete = await Product.findById(id);
+    if (productToDelete.userId.toString() !== userId) {
+      throw ApiError.ForbiddenError();
+    }
     const product = await Product.findByIdAndDelete(id);
     if (!product) {
       throw ApiError.BadRequest('Product not found');
     }
     return product;
   }
-  
+
+  async getMyProducts(id, limit, page) {
+    const products = await Product.find({userId: id}).limit(limit).skip((page - 1) * limit).sort({'updatedAt': -1});
+    const totalCount = await  Product.countDocuments({userId: id});
+    const totalPages = Math.ceil(totalCount / limit);
+    return {products, totalCount, totalPages};
+  }
+
 }
 
 export default new ProductsService();

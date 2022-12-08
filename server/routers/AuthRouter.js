@@ -9,8 +9,11 @@ router.post('/registration',
   body('password').isLength({min:3, max: 32}),
   body('userName').notEmpty(),
   authController.registration);
-router.post('/login', authController.login);
+router.post('/login',
+  body('email').isEmail(),
+  body('password').notEmpty(),
+  authController.login);
 router.post('/logout', authController.logout);
-router.post('/refresh', authController.refresh);
+router.get('/refresh', authController.refresh);
 
 export default router;

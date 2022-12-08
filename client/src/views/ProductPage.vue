@@ -7,11 +7,13 @@
       <div class="product__title">
         <h2>{{ product.title }}</h2>
         <icon-button
+          v-if="isShowProductButtons"
           icon="fa-solid fa-pen-to-square"
           type="button"
           @click="onOpenEditModal"
         />
         <icon-button
+          v-if="isShowProductButtons"
           icon="fa-solid fa-trash"
           type="button"
           @click="onOpenDeleteModal"
@@ -54,9 +56,12 @@ import AdForm from '@/components/marketboard/AdForm.vue';
 import { v4 as uuidv4 } from 'uuid';
 import type { TAdFormType } from '@/types/adsTypes';
 import { toDateFormat } from '@/utils/dates';
+import { useUserStore } from '@/stores/userStore';
 const route = useRoute();
 const router = useRouter();
+
 const adsStore = useAdsStore();
+const userStore = useUserStore();
 
 const isDeleteModalOpen = ref(false);
 const isEditModalOpen = ref(false);
@@ -79,6 +84,13 @@ const createdDate = computed(() => {
 
 const updatedDate = computed(() => {
   return toDateFormat(adsStore.currentProduct!.updatedAt);
+});
+
+const isShowProductButtons = computed(() => {
+  if (!adsStore.currentProduct || !userStore.user) {
+    return false;
+  }
+  return product.value.userId === userStore.user.id;
 });
 
 const productFormValues = computed(() => {

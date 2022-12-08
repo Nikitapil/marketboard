@@ -19,12 +19,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
+import { getUniqueArray } from '@/utils/utils';
 const props = defineProps<{ photosLinks: string[] }>();
 
 const chosenPhoto = ref(props.photosLinks[0]);
 
 const photos = computed(() => {
-  return props.photosLinks.map((link) => ({
+  return getUniqueArray(props.photosLinks).map((link) => ({
     link,
     id: uuidv4()
   }));

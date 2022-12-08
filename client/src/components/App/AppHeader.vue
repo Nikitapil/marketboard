@@ -4,31 +4,84 @@
       <router-link class="header__link" to="/">
         <h1 class="header__title">MarketBoard</h1>
       </router-link>
-      <div class="header__auth-btns">
+      <div v-if="!userStore.user" class="header__auth-btns">
         <button @click="onOpenloginModal">Login</button>
         <button @click="onOpenRegistrationModal">Registration</button>
       </div>
+      <div v-else class="header__auth-btns">
+        <button>{{ userName }}</button>
+        <button @click="onLogOut">Logout</button>
+      </div>
     </div>
     <app-modal v-model="isRegistrationModalOpened">
-      <auth-form :is-registration="true" @close="onClosRegistrationModal" />
+      <auth-form
+        :is-registration="true"
+        @close="onClosRegistrationModal"
+        @submit="onRegistrationSubmit"
+      />
     </app-modal>
     <app-modal v-model="isLoginModalOpened">
-      <auth-form :is-registration="false" @close="onCloseloginModal" />
+      <auth-form
+        :is-registration="false"
+        @close="onCloseloginModal"
+        @submit="onLogin"
+      />
     </app-modal>
   </header>
 </template>
 <script lang="ts" setup>
 import AppModal from '@/components/UI/AppModal.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import AuthForm from '@/components/auth/AuthForm.vue';
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
 
 const isRegistrationModalOpened = ref(false);
 const isLoginModalOpened = ref(false);
 
-const onOpenRegistrationModal = () => (isRegistrationModalOpened.value = true);
+const userName = computed(() => {
+  if (!userStore.user) {
+    return '';
+  }
+  return userStore.user.userName;
+});
+
+const onOpenRegistrationModal = () => {
+  userStore.resetError();
+  isRegistrationModalOpened.value = true;
+};
+
 const onClosRegistrationModal = () => (isRegistrationModalOpened.value = false);
-const onOpenloginModal = () => (isLoginModalOpened.value = true);
+
+const onOpenloginModal = () => {
+  userStore.resetError();
+  isLoginModalOpened.value = true;
+};
+
 const onCloseloginModal = () => (isLoginModalOpened.value = false);
+
+const onRegistrationSubmit = async (
+  email: string,
+  password: string,
+  userName: string
+) => {
+  const isRegistered = await userStore.registration(email, password, userName);
+  if (isRegistered) {
+    onClosRegistrationModal();
+  }
+};
+
+const onLogOut = async () => {
+  await userStore.logOut();
+};
+
+const onLogin = async (email: string, password: string) => {
+  const isLoggedIn = await userStore.login(email, password);
+  if (isLoggedIn) {
+    onCloseloginModal();
+  }
+};
 </script>
 <style lang="scss" scoped>
 .header {

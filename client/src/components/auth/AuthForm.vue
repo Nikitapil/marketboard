@@ -1,8 +1,5 @@
 <template>
-  <form
-    class="auth-form"
-    @submit.prevent="$emit('submit', email, password, userName)"
-  >
+  <form class="auth-form" @submit.prevent="onSubmit">
     <app-input
       v-model="email"
       name="email"
@@ -35,15 +32,26 @@
       />
       <app-button color="primary" text="Submit" type="submit" />
     </div>
+    <app-error v-if="userStore.authError" :error="userStore.authError" />
   </form>
 </template>
 <script lang="ts" setup>
 import AppInput from '@/components/UI/AppInput.vue';
 import { computed, ref } from 'vue';
 import AppButton from '@/components/UI/AppButton.vue';
+import { useForm } from 'vee-validate';
+import AppError from '@/components/UI/AppError.vue';
+import { useUserStore } from '@/stores/userStore';
+
+const { validate } = useForm();
+
+const userStore = useUserStore();
+
 const props = defineProps<{
   isRegistration: boolean;
 }>();
+
+const emit = defineEmits(['submit']);
 
 const passwordRules = computed(() => {
   return props.isRegistration ? 'required|min:8' : 'required';
@@ -52,6 +60,14 @@ const passwordRules = computed(() => {
 const email = ref('');
 const password = ref('');
 const userName = ref('');
+
+const onSubmit = async () => {
+  const isValid = await validate();
+  if (!isValid.valid) {
+    return;
+  }
+  emit('submit', email.value, password.value, userName.value);
+};
 </script>
 <style scoped lang="scss">
 .auth-form {

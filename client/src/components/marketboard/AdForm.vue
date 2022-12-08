@@ -55,6 +55,7 @@
       </div>
     </div>
     <app-button
+      v-if="adInfo.photoLinks.length < 3"
       class="add-btn"
       type="button"
       text="Add photo link"

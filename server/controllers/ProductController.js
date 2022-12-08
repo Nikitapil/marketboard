@@ -9,7 +9,7 @@ class ProductController {
       if (!errors.isEmpty()) {
        return next(ApiError.BadRequest('Validation error', errors.array()));
       }
-      const product = await productsService.createProduct(req.body);
+      const product = await productsService.createProduct({ ...req.body, userId: req.user.id });
       return res.status(200).json(product);
     } catch (e) {
       return next(e);
@@ -20,6 +20,17 @@ class ProductController {
     try {
       const {limit = 9, page = 1} = req.query;
       const productsData = await productsService.getAllProducts(limit, page);
+      return res.status(200).json(productsData);
+    } catch (e) {
+      return next(e);
+    }
+  }
+
+  async getMyProducts(req, res, next) {
+    try {
+      const {limit = 9, page = 1} = req.query;
+      const { id } = req.user;
+      const productsData = await productsService.getMyProducts(id, limit, page);
       return res.status(200).json(productsData);
     } catch (e) {
       return next(e);
@@ -43,6 +54,9 @@ class ProductController {
        return next(ApiError.BadRequest('Validation error', errors.array()));
       }
       const product = req.body;
+      if (product.userId.toString() !== req.user.id) {
+        return next(ApiError.ForbiddenError());
+      }
       const updatedProduct = await productsService.updateProduct(product);
      return res.status(200).json(updatedProduct);
     } catch (e) {
@@ -53,7 +67,7 @@ class ProductController {
   async deleteProduct(req, res, next) {
     try {
       const { id } = req.params;
-      const product = await productsService.deleteProduct(id);
+      const product = await productsService.deleteProduct(id, req.user.id);
      return res.status(200).json({_id: product._id});
     } catch (e) {
      return next(e);

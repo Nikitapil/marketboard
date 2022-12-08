@@ -17,4 +17,8 @@ export default class ApiError extends Error{
     return new ApiError(400, message, errors);
   }
 
+  static ForbiddenError() {
+    return new ApiError(403, 'Forbidden');
+  }
+
 }

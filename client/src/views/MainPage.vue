@@ -3,7 +3,10 @@
     <div class="page-container">
       <h2 class="page-title">Ads list</h2>
       <section class="main-controls">
-        <button class="create-btn" @click="onOpenAdForm">Create new ad</button>
+        <button v-if="userStore.user" class="create-btn" @click="onOpenAdForm">
+          Create new ad
+        </button>
+        <content-switcher :options="filterOptions" :value="filterValue" @change="onFilterChange" />
         <app-modal v-model="isAdFormOpened">
           <ad-form @cancel="onCloseAdForm" @on-submit="onCreate" />
         </app-modal>
@@ -27,11 +30,30 @@ import { useAdsStore } from '@/stores/adsStore';
 import AdItem from '@/components/marketboard/AdItem.vue';
 import type { TAdFormType } from '@/types/adsTypes';
 import AppPagination from '@/components/UI/AppPagination.vue';
+import { useUserStore } from '@/stores/userStore';
+import ContentSwitcher from '@/components/UI/ContentSwitcher.vue';
 
 const adsStore = useAdsStore();
+const userStore = useUserStore();
 
 const isAdFormOpened = ref(false);
 const page = ref(1);
+const filterValue = ref('all');
+
+const filterOptions = ref([
+  {
+    id: 'all',
+    text: 'All'
+  },
+  {
+    id: 'my',
+    text: 'My'
+  }
+]);
+
+const onFilterChange = (id: string) => {
+  filterValue.value = id;
+};
 
 const getProducts = async () => {
   await adsStore.getAllProducts(page.value);
@@ -84,5 +106,7 @@ const onCreate = async (adInfo: TAdFormType) => {
 
 .main-controls {
   margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
 }
 </style>

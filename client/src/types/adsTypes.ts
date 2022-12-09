@@ -1,3 +1,5 @@
+import type { EProductFilterTypes } from '@/constants/products';
+
 export type TAdFormType = {
   title: string;
   description: string;
@@ -28,7 +30,7 @@ export type TAdsStoreState = {
 export type TAdsGetters = {};
 
 export interface IAdsGetters {
-  getAllProducts: (page?: number) => void;
+  getAllProducts: (page?: number, filter?: EProductFilterTypes) => void;
   createProduct: (product: TAdFormType) => void;
   getCurrentProduct: (id: string) => void;
   deleteCurrentProduct: () => void;

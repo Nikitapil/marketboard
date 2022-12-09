@@ -18,6 +18,24 @@ export class ProductService {
     }
   }
 
+  static async getAllMyProducts(page = 1): Promise<TAllProductsResponse> {
+    try {
+      const response = await $api.get<TAllProductsResponse>(
+        '/all_my_products',
+        {
+          params: { page }
+        }
+      );
+      return response.data;
+    } catch (e) {
+      return {
+        products: [],
+        totalCount: 0,
+        totalPages: 0
+      };
+    }
+  }
+
   static async createProduct(data: TAdFormType) {
     try {
       const request = {

@@ -7,14 +7,18 @@
       label="Email"
       rules="required|email"
     />
-    <app-input
-      v-model="password"
-      name="password"
-      placeholder="Enter your password"
-      label="Password"
-      :rules="passwordRules"
-      type="password"
-    />
+    <div class="auth-form__password">
+      <app-input
+        v-model="password"
+        class="password-field"
+        name="password"
+        placeholder="Enter your password"
+        label="Password"
+        :rules="passwordRules"
+        :type="passwordType"
+      />
+      <icon-button type="button" icon="fa-solid fa-eye" @click="onPasswordTypeChange" />
+    </div>
     <app-input
       v-if="isRegistration"
       v-model="userName"
@@ -42,6 +46,7 @@ import AppButton from '@/components/UI/AppButton.vue';
 import { useForm } from 'vee-validate';
 import AppError from '@/components/UI/AppError.vue';
 import { useUserStore } from '@/stores/userStore';
+import IconButton from '@/components/UI/IconButton.vue';
 
 const { validate } = useForm();
 
@@ -60,6 +65,11 @@ const passwordRules = computed(() => {
 const email = ref('');
 const password = ref('');
 const userName = ref('');
+const passwordType = ref('password');
+
+const onPasswordTypeChange = () => {
+  passwordType.value = passwordType.value === 'password' ? 'text' : 'password';
+};
 
 const onSubmit = async () => {
   const isValid = await validate();
@@ -79,6 +89,19 @@ const onSubmit = async () => {
     display: flex;
     gap: 15px;
     align-self: flex-end;
+  }
+
+  &__password {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 20px;
+    .password-field {
+      flex: 1 1 auto;
+    }
+    button {
+      margin-top: 15px;
+    }
   }
 }
 </style>

@@ -6,7 +6,12 @@
         <button v-if="userStore.user" class="create-btn" @click="onOpenAdForm">
           Create new ad
         </button>
-        <content-switcher :options="filterOptions" :value="filterValue" @change="onFilterChange" />
+        <content-switcher
+          v-if="userStore.user"
+          :options="filterOptions"
+          :value="filterValue"
+          @change="onFilterChange"
+        />
         <app-modal v-model="isAdFormOpened">
           <ad-form @cancel="onCloseAdForm" @on-submit="onCreate" />
         </app-modal>
@@ -32,31 +37,37 @@ import type { TAdFormType } from '@/types/adsTypes';
 import AppPagination from '@/components/UI/AppPagination.vue';
 import { useUserStore } from '@/stores/userStore';
 import ContentSwitcher from '@/components/UI/ContentSwitcher.vue';
+import { EProductFilterTypes } from '@/constants/products';
 
 const adsStore = useAdsStore();
 const userStore = useUserStore();
 
 const isAdFormOpened = ref(false);
 const page = ref(1);
-const filterValue = ref('all');
+const filterValue = ref(EProductFilterTypes.ALL);
 
 const filterOptions = ref([
   {
-    id: 'all',
+    id: EProductFilterTypes.ALL,
     text: 'All'
   },
   {
-    id: 'my',
+    id: EProductFilterTypes.MY,
     text: 'My'
   }
 ]);
 
-const onFilterChange = (id: string) => {
-  filterValue.value = id;
+const getProducts = async () => {
+  await adsStore.getAllProducts(page.value, filterValue.value);
 };
 
-const getProducts = async () => {
-  await adsStore.getAllProducts(page.value);
+const onFilterChange = async (id: EProductFilterTypes) => {
+  filterValue.value = id;
+  if (page.value !== 1) {
+    page.value = 1;
+    return;
+  }
+  await getProducts();
 };
 
 watch(

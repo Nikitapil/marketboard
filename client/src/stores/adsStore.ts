@@ -6,6 +6,7 @@ import type {
   TAdsStoreState
 } from '@/types/adsTypes';
 import { ProductService } from '@/services/ProductService';
+import { EProductFilterTypes } from '@/constants/products';
 
 export const useAdsStore = defineStore<
   'ads-store',
@@ -24,8 +25,11 @@ export const useAdsStore = defineStore<
   },
 
   actions: {
-    async getAllProducts(page = 1) {
-      const data = await ProductService.getAllProducts(page);
+    async getAllProducts(page = 1, filter = EProductFilterTypes.ALL) {
+      const data =
+        filter === EProductFilterTypes.ALL
+          ? await ProductService.getAllProducts(page)
+          : await ProductService.getAllMyProducts(page);
       this.ads = data.products;
       this.totalCount = data.totalCount;
       this.totalPages = data.totalPages;

@@ -15,7 +15,6 @@ class AuthController {
       res.cookie('refreshToken', userData.refreshToken, {maxAge: AuthController.getMaxRefreshTokenCookieAge(), httpOnly: true});
       return res.json(userData);
     } catch (e) {
-      console.log(e);
       next(e);
     }
   }
@@ -42,7 +41,6 @@ class AuthController {
       res.clearCookie('refreshToken');
       return res.json(token);
     } catch (e) {
-      console.log(e);
       next(e);
     }
   }

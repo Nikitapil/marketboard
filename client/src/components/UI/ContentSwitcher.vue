@@ -30,9 +30,10 @@ const clickHandler = (id: string) => {
 .content-switcher {
   display: flex;
   button {
-    padding: 5px;
+    padding: 5px 7px;
     background: none;
     border: 1px solid black;
+    transition: 0.4s;
 
     &:first-child {
       border-radius: 5px 0 0 5px;

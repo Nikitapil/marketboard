@@ -1,5 +1,8 @@
 <template>
-  <div v-if="!adsStore.currentProduct" class="container">
+  <div v-if="adsStore.isCurrentProductLoading" class="container loader">
+    <horizontal-loader />
+  </div>
+  <div v-else-if="!adsStore.currentProduct" class="container">
     <p class="error">No product with id {{ $route.params.id }}</p>
   </div>
   <div v-else class="container">
@@ -24,6 +27,7 @@
         <div class="product__texts">
           <p><span>Description</span>: {{ description }}</p>
           <p><span>Price</span>: {{ price }}</p>
+          <p><span>Contact Information</span>: {{ contacts }}</p>
           <p><span>Created</span>: {{ createdDate }}</p>
           <p><span>Updated</span>: {{ updatedDate }}</p>
         </div>
@@ -57,6 +61,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { TAdFormType } from '@/types/adsTypes';
 import { toDateFormat } from '@/utils/dates';
 import { useUserStore } from '@/stores/userStore';
+import HorizontalLoader from '@/components/UI/loaders/HorizontalLoader.vue';
 const route = useRoute();
 const router = useRouter();
 
@@ -78,6 +83,8 @@ const description = computed(() => {
   return adsStore.currentProduct?.description || 'Not specified';
 });
 
+const contacts = computed(() => adsStore.currentProduct!.contacts);
+
 const createdDate = computed(() => {
   return toDateFormat(adsStore.currentProduct!.createdAt);
 });
@@ -93,7 +100,7 @@ const isShowProductButtons = computed(() => {
   return product.value.userId === userStore.user.id;
 });
 
-const productFormValues = computed(() => {
+const productFormValues = computed((): TAdFormType => {
   return {
     title: product.value.title,
     description: product.value.description,
@@ -102,7 +109,8 @@ const productFormValues = computed(() => {
       id: uuidv4()
     })),
     mainPhoto: product.value.mainPhoto,
-    price: product.value.price
+    price: product.value.price,
+    contacts: product.value.contacts
   };
 });
 
@@ -138,7 +146,7 @@ onMounted(async () => {
 });
 </script>
 <style scoped lang="scss">
-.error {
+.error, .loader {
   margin-top: 30px;
   font-size: 24px;
 }
@@ -169,6 +177,7 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    flex: 1 1;
     span {
       font-weight: 700;
       font-size: 20px;

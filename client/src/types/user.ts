@@ -7,6 +7,7 @@ export type TUser = {
 export type TUserStoreState = {
   user: TUser | null;
   authError: string;
+  isLoading: boolean;
 };
 
 export type TUserStoreGetters = {};

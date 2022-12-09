@@ -4,7 +4,8 @@
       <router-link class="header__link" to="/">
         <h1 class="header__title">MarketBoard</h1>
       </router-link>
-      <div v-if="!userStore.user" class="header__auth-btns">
+      <horizontal-loader v-if="userStore.isLoading" />
+      <div v-else-if="!userStore.user" class="header__auth-btns">
         <button @click="onOpenloginModal">Login</button>
         <button @click="onOpenRegistrationModal">Registration</button>
       </div>
@@ -34,6 +35,7 @@ import AppModal from '@/components/UI/AppModal.vue';
 import { computed, ref } from 'vue';
 import AuthForm from '@/components/auth/AuthForm.vue';
 import { useUserStore } from '@/stores/userStore';
+import HorizontalLoader from '@/components/UI/loaders/HorizontalLoader.vue';
 
 const userStore = useUserStore();
 

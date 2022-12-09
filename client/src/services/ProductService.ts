@@ -3,10 +3,13 @@ import type { TAdFormType, TAdType } from '@/types/adsTypes';
 import type { TAllProductsResponse } from '@/types/product-responses';
 
 export class ProductService {
-  static async getAllProducts(page = 1): Promise<TAllProductsResponse> {
+  static async getAllProducts(
+    page = 1,
+    search = ''
+  ): Promise<TAllProductsResponse> {
     try {
       const response = await $api.get<TAllProductsResponse>('/all_products', {
-        params: { page }
+        params: { page, search }
       });
       return response.data;
     } catch (e) {
@@ -18,12 +21,15 @@ export class ProductService {
     }
   }
 
-  static async getAllMyProducts(page = 1): Promise<TAllProductsResponse> {
+  static async getAllMyProducts(
+    page = 1,
+    search = ''
+  ): Promise<TAllProductsResponse> {
     try {
       const response = await $api.get<TAllProductsResponse>(
         '/all_my_products',
         {
-          params: { page }
+          params: { page, search }
         }
       );
       return response.data;

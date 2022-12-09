@@ -16,13 +16,15 @@ export const useUserStore = defineStore<
   state: () => {
     return {
       user: null,
-      authError: ''
+      authError: '',
+      isLoading: false
     };
   },
 
   actions: {
     async registration(email: string, password: string, userName: string) {
       try {
+        this.isLoading = true;
         this.resetError();
         const response = await UserService.registration(
           email,
@@ -35,11 +37,14 @@ export const useUserStore = defineStore<
       } catch (e: any) {
         this.authError = e.response.data.message;
         return false;
+      } finally {
+        this.isLoading = false;
       }
     },
 
     async login(email: string, password: string) {
       try {
+        this.isLoading = true;
         this.authError = '';
         const response = await UserService.login(email, password);
         localStorage.setItem('token', response.data.accessToken);
@@ -48,6 +53,8 @@ export const useUserStore = defineStore<
       } catch (e: any) {
         this.authError = e.response.data.message;
         return false;
+      } finally {
+        this.isLoading = false;
       }
     },
 
@@ -57,21 +64,27 @@ export const useUserStore = defineStore<
 
     async checkAuth() {
       try {
+        this.isLoading = true;
         const response = await UserService.checkAuth();
         localStorage.setItem('token', response.data.accessToken);
         this.user = response.data.user;
       } catch (e) {
         this.user = null;
+      } finally {
+        this.isLoading = false;
       }
     },
 
     async logOut() {
       try {
+        this.isLoading = true;
         await UserService.logOut();
         localStorage.removeItem('token');
         this.user = null;
       } catch (e) {
         console.log(e);
+      } finally {
+        this.isLoading = false;
       }
     }
   }

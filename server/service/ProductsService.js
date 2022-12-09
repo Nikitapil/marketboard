@@ -7,9 +7,13 @@ class ProductsService {
     return newProduct;
   }
   
-  async getAllProducts(limit, page) {
-    const products = await Product.find().limit(limit).skip((page - 1) * limit).sort({'updatedAt': -1});
-    const totalCount = await  Product.countDocuments();
+  async getAllProducts(limit, page, search) {
+    const products = await Product
+      .find({title: {$regex: search, $options: 'i'}})
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .sort({'updatedAt': -1});
+    const totalCount = await  Product.countDocuments({title: {$regex: search, $options: 'i'}});
     const totalPages = Math.ceil(totalCount / limit);
     return {products, totalCount, totalPages};
   }
@@ -42,9 +46,13 @@ class ProductsService {
     return product;
   }
 
-  async getMyProducts(id, limit, page) {
-    const products = await Product.find({userId: id}).limit(limit).skip((page - 1) * limit).sort({'updatedAt': -1});
-    const totalCount = await  Product.countDocuments({userId: id});
+  async getMyProducts(id, limit, page, search) {
+    const products = await Product
+      .find({userId: id, title: {$regex: search, $options: 'i'}})
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .sort({'updatedAt': -1});
+    const totalCount = await  Product.countDocuments({userId: id, title: {$regex: search, $options: 'i'}});
     const totalPages = Math.ceil(totalCount / limit);
     return {products, totalCount, totalPages};
   }

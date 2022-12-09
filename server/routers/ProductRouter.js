@@ -6,7 +6,8 @@ import authMiddleware from '../middlewares/auth-middleware.js';
 const router = new Router();
 
 const productsValidators = [
-  check('title', 'Title cant be empty').notEmpty()
+  check('title', 'Title cant be empty').notEmpty(),
+  check('contacts', 'Contacts cant be empty').notEmpty()
 ];
 
 router.post('/product', productsValidators, authMiddleware, ProductController.createProduct);

@@ -18,8 +18,8 @@ class ProductController {
 
   async getAllProducts(req, res, next) {
     try {
-      const {limit = 9, page = 1} = req.query;
-      const productsData = await productsService.getAllProducts(limit, page);
+      const {limit = 9, page = 1, search = ''} = req.query;
+      const productsData = await productsService.getAllProducts(limit, page, search);
       return res.status(200).json(productsData);
     } catch (e) {
       return next(e);
@@ -28,9 +28,9 @@ class ProductController {
 
   async getMyProducts(req, res, next) {
     try {
-      const {limit = 9, page = 1} = req.query;
+      const {limit = 9, page = 1, search = ''} = req.query;
       const { id } = req.user;
-      const productsData = await productsService.getMyProducts(id, limit, page);
+      const productsData = await productsService.getMyProducts(id, limit, page, search);
       return res.status(200).json(productsData);
     } catch (e) {
       return next(e);

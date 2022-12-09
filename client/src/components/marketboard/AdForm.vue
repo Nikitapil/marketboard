@@ -22,6 +22,14 @@
       placeholder="Enter price"
       rules="numeric"
     />
+    <app-input
+      v-model="adInfo.contacts"
+      name="contacts"
+      label="Contact information:"
+      placeholder="Enter your contacts"
+      rules="required"
+      tag-name='textarea'
+    />
     <div v-for="(link, index) in adInfo.photoLinks" :key="link.id">
       <div class="photolink-control">
         <app-input
@@ -94,7 +102,8 @@ const adInfo = ref<TAdFormType>({
   description: '',
   photoLinks: [{ id: uuidv4(), link: '' }],
   mainPhoto: '',
-  price: ''
+  price: '',
+  contacts: ''
 });
 
 const onAddPhotolink = () => {

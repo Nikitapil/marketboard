@@ -20,27 +20,38 @@ export const useAdsStore = defineStore<
       ads: [],
       totalCount: 0,
       totalPages: 0,
-      currentProduct: null
+      currentProduct: null,
+      isAdsLoading: false,
+      isCurrentProductLoading: false
     };
   },
 
   actions: {
-    async getAllProducts(page = 1, filter = EProductFilterTypes.ALL) {
+    async getAllProducts(
+      page = 1,
+      filter = EProductFilterTypes.ALL,
+      search = ''
+    ) {
+      this.isAdsLoading = true;
       const data =
         filter === EProductFilterTypes.ALL
-          ? await ProductService.getAllProducts(page)
-          : await ProductService.getAllMyProducts(page);
+          ? await ProductService.getAllProducts(page, search.trim())
+          : await ProductService.getAllMyProducts(page, search.trim());
       this.ads = data.products;
       this.totalCount = data.totalCount;
       this.totalPages = data.totalPages;
+      this.isAdsLoading = false;
     },
+
     async createProduct(product: TAdFormType) {
       await ProductService.createProduct(product);
       await this.getAllProducts();
     },
 
     async getCurrentProduct(id: string) {
+      this.isCurrentProductLoading = true;
       this.currentProduct = await ProductService.getSingleProduct(id);
+      this.isCurrentProductLoading = false;
     },
 
     async deleteCurrentProduct() {
@@ -61,6 +72,7 @@ export const useAdsStore = defineStore<
         ...product,
         photoLinks: product.photoLinks.map((link) => link.link)
       };
+      this.isCurrentProductLoading = true;
       await ProductService.editProduct(request);
       await this.getCurrentProduct(this.currentProduct._id);
     }

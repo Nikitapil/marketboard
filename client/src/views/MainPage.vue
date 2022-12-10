@@ -139,6 +139,7 @@ const onCreate = async (adInfo: TAdFormType) => {
 .main-controls {
   margin-bottom: 20px;
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
 }
 </style>

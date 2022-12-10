@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import AppInput from '@/components/UI/AppInput.vue';
 import AppButton from '@/components/UI/AppButton.vue';
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   modelValue: string;

@@ -2,6 +2,7 @@ export type TUser = {
   id: string;
   userName: string;
   email: string;
+  role: string;
 };
 
 export type TUserStoreState = {

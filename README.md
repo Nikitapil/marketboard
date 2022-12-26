@@ -1,7 +1,7 @@
 # Marketboard
 Fullstack marketboard application.  Frontend based on Vue3 and backend based on express.js
 
-#Starting guide
+# Starting guide
 1) clone this repo
 2) cd server
 3) create .env file and set next vars:  
